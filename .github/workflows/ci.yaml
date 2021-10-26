@@ -46,3 +46,5 @@ jobs:
         fi
 
         krew version
+        kubectl-krew version
+

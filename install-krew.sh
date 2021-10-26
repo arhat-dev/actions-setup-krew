@@ -47,6 +47,7 @@ if [[ ! -d "${cache_dir}" ]]; then
 
   mv "${cache_dir}/krew-${krew_os}_${krew_arch}" "${cache_dir}/krew"
   chmod +x "${cache_dir}/krew"
+  cp "${cache_dir}/krew" "${cache_dir}/kubectl-krew"
 fi
 
 "${cache_dir}/krew" version
