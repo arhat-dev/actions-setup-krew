@@ -1,0 +1,17 @@
+name: krew installer
+description: Install krew
+author: The Arhat Dev Authors
+branding:
+  color: blue
+inputs:
+  version:
+    description: krew version
+    # source(git-tags): https://github.com/kubernetes-sigs/krew
+    default: v0.4.2
+
+runs:
+  using: composite
+  steps:
+  - shell: bash
+    run: |
+      bash "${GITHUB_ACTION_PATH}/install-krew.sh" "${{ inputs.version }}"

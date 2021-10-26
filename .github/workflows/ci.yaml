@@ -8,10 +8,6 @@ on:
         description: reason to run this workflow
         required: false
         default: test
-  check_run:
-    types:
-    - rerequested
-    - requested_action
   pull_request:
     branches:
     - master
@@ -23,9 +19,30 @@ on:
 
 jobs:
   check:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os:
+        - ubuntu-latest
+        - windows-latest
+        - macos-latest
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v2
     - name: Lint
+      if: ${{ matrix.os == 'ubuntu-latest' }}
       run: |
         make lint.all
+
+    - name: Install krew
+      uses: arhat-dev/actions-setup-krew@master
+
+    - name: Check krew installed
+      shell: bash
+      run: |-
+        if ! command -v krew ; then
+          echo "krew NOT INSTALLED to PATH!"
+          exit 1
+        fi
+
+        krew version

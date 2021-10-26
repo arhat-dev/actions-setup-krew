@@ -1,8 +1,13 @@
-# Template Repo
+# actions-setup-krew
 
-[![CI](https://github.com/arhat-dev/template-repo/workflows/CI/badge.svg)](https://github.com/arhat-dev/template-repo/actions?query=workflow%3ACI)
+[![CI](https://github.com/arhat-dev/actions-setup-krew/workflows/CI/badge.svg)](https://github.com/arhat-dev/actions-setup-krew/actions?query=workflow%3ACI)
 
-Base template for more specific repo templates
+Install (kubectl-)`krew` to your github CI environemnt
+
+```yaml
+- name: Install krew
+  uses: arhat-dev/actions-setup-krew@master
+```
 
 ## LICENSE
 
