@@ -4,38 +4,44 @@ set -eux
 
 version="$1"
 
-krew_os=""
-arch="amd64"
-if uname -m; then
-  arch=$(uname -m)
-else
-  krew_os="windows"
-fi
+get_krew_os() {
+  case "${RUNNER_OS}" in
+  Linux)
+    printf "linux"
+    ;;
+  Windows)
+    printf "windows"
+    ;;
+  macOS)
+    printf "darwin"
+    ;;
+  esac
+}
 
-cache_dir="${RUNNER_TOOL_CACHE:-"$(mktemp -d)"}/krew/${version}/${arch}"
+get_krew_arch() {
+  arch="amd64"
+  if uname -m >&2; then
+    arch=$(uname -m)
+  fi
 
-krew_arch="amd64"
-case "${arch}" in
+  case "${arch}" in
   amd64 | x86_64 | x64)
-    krew_arch="amd64"
+    printf "amd64"
     ;;
   arm64 | arm64v8 | armv8 | aarch64)
-    krew_arch="arm64"
+    printf "arm64"
     ;;
-esac
+  *)
+    # best effort, do something
+    printf "amd64"
+    ;;
+  esac
+}
 
-if [[ -z "${krew_os}" ]]; then
-  if command -v podman >/dev/null 2>&1; then
-  krew_os="linux"
-  elif command -v xcode-select >/dev/null 2>&1; then
-    krew_os="darwin"
-  elif command -v choco >/dev/null 2>&1; then
-    krew_os="windows"
-  else
-    echo "Cannot determine os type" >&2
-    exit 1
-  fi
-fi
+krew_os="$(get_krew_os)"
+krew_arch="$(get_krew_arch)"
+
+cache_dir="${RUNNER_TOOL_CACHE:-"$(mktemp -d)"}/krew/${version}/${krew_arch}"
 
 if [[ ! -d "${cache_dir}" ]]; then
   mkdir -p "${cache_dir}"
